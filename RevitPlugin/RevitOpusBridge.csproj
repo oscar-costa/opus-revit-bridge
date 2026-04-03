@@ -15,6 +15,10 @@
     <OutputPath>$(BaseOutputPath)$(Configuration)\Revit$(RevitVersion)\</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(RevitVersion)' == '2020'">
+    <DefineConstants>$(DefineConstants);REVIT2020</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="RevitAPI">
       <HintPath>$(RevitApiPath)\RevitAPI.dll</HintPath>

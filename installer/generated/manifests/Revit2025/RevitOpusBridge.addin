@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>RevitOpusBridge</Name>
+    <Assembly>C:\Program Files\Opus Revit Bridge\RevitPlugin\Revit2025\RevitOpusBridge.dll</Assembly>
+    <AddInId>724E2F54-394D-4A64-9E2A-4FF53A3B4B03</AddInId>
+    <FullClassName>RevitOpusBridge.App</FullClassName>
+    <VendorId>OPBR</VendorId>
+    <VendorDescription>Opus Revit Bridge</VendorDescription>
+  </AddIn>
+</RevitAddIns>

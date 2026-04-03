@@ -55,7 +55,7 @@ namespace RevitOpusBridge.Handlers
 
                     elementList.Add(new
                     {
-                        id = element.Id.Value,
+                        id = RevitApiCompatibility.GetElementIdValue(element.Id),
                         name = element.Name,
                         typeName,
                         level = levelName,

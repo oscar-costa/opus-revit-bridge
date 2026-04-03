@@ -9553,9 +9553,39 @@
         </Directory>
       </Directory>
       <Directory Id="Dir_9ABC8F4D675880870400748C" Name="RevitPlugin">
+        <Directory Id="Dir_BE0D6002FC787FF79A29032D" Name="Revit2020">
+          <Component Id="Cmp_2E72C21E9DCAE111643D668E" Guid="*">
+            <File Source="$(var.PayloadRoot)\ProgramFiles\Opus Revit Bridge\RevitPlugin\Revit2020\RevitOpusBridge.dll" Id="File_2E72C21E9DCAE111643D668E" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="Dir_C0953C8450C818E056D59B11" Name="Revit2021">
+          <Component Id="Cmp_F1AC20C2CB784AB71D17054B" Guid="*">
+            <File Source="$(var.PayloadRoot)\ProgramFiles\Opus Revit Bridge\RevitPlugin\Revit2021\RevitOpusBridge.dll" Id="File_F1AC20C2CB784AB71D17054B" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="Dir_45E549FAFD8ABE7026E5FB23" Name="Revit2022">
+          <Component Id="Cmp_D173F14AEB20E840C492B2A7" Guid="*">
+            <File Source="$(var.PayloadRoot)\ProgramFiles\Opus Revit Bridge\RevitPlugin\Revit2022\RevitOpusBridge.dll" Id="File_D173F14AEB20E840C492B2A7" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="Dir_FB7F975F14946842F8C15FDB" Name="Revit2023">
+          <Component Id="Cmp_18E6B79B3B68674C65F537E0" Guid="*">
+            <File Source="$(var.PayloadRoot)\ProgramFiles\Opus Revit Bridge\RevitPlugin\Revit2023\RevitOpusBridge.dll" Id="File_18E6B79B3B68674C65F537E0" KeyPath="yes" />
+          </Component>
+        </Directory>
         <Directory Id="Dir_44AFBE683DD859D79E9ED185" Name="Revit2024">
           <Component Id="Cmp_B57E89E57505FD53E4834620" Guid="*">
             <File Source="$(var.PayloadRoot)\ProgramFiles\Opus Revit Bridge\RevitPlugin\Revit2024\RevitOpusBridge.dll" Id="File_B57E89E57505FD53E4834620" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="Dir_BAB2A31E66A54D22E6BA72CB" Name="Revit2025">
+          <Component Id="Cmp_6D3EF5082B32BAD736CC3BA1" Guid="*">
+            <File Source="$(var.PayloadRoot)\ProgramFiles\Opus Revit Bridge\RevitPlugin\Revit2025\RevitOpusBridge.dll" Id="File_6D3EF5082B32BAD736CC3BA1" KeyPath="yes" />
+          </Component>
+        </Directory>
+        <Directory Id="Dir_B1AED1EF6ACC420C789FA713" Name="Revit2026">
+          <Component Id="Cmp_C38E2703934AC2271F2B74D0" Guid="*">
+            <File Source="$(var.PayloadRoot)\ProgramFiles\Opus Revit Bridge\RevitPlugin\Revit2026\RevitOpusBridge.dll" Id="File_C38E2703934AC2271F2B74D0" KeyPath="yes" />
           </Component>
         </Directory>
       </Directory>
@@ -12456,7 +12486,13 @@
       <ComponentRef Id="Cmp_42739583E3F75294BC056517" />
       <ComponentRef Id="Cmp_2B52CE44E84D9D2E461F7215" />
       <ComponentRef Id="Cmp_FA950C171E394B4A50E3F35A" />
+      <ComponentRef Id="Cmp_2E72C21E9DCAE111643D668E" />
+      <ComponentRef Id="Cmp_F1AC20C2CB784AB71D17054B" />
+      <ComponentRef Id="Cmp_D173F14AEB20E840C492B2A7" />
+      <ComponentRef Id="Cmp_18E6B79B3B68674C65F537E0" />
       <ComponentRef Id="Cmp_B57E89E57505FD53E4834620" />
+      <ComponentRef Id="Cmp_6D3EF5082B32BAD736CC3BA1" />
+      <ComponentRef Id="Cmp_C38E2703934AC2271F2B74D0" />
       <ComponentRef Id="Cmp_F786A1F4A92C5B222EC2AE92" />
       <ComponentRef Id="Cmp_33C2AAC0736F6D64E04785A7" />
     </ComponentGroup>
@@ -12488,6 +12524,38 @@
     </ComponentGroup>
   </Fragment>
   <Fragment>
+    <Property Id="REVIT2020DIR">
+      <DirectorySearch AssignToProperty="yes" Path="[ProgramFiles64Folder]Autodesk\Revit 2020" Id="SearchRevit2020Dir">
+        <FileSearch Id="SearchRevit2020Exe" Name="Revit.exe" />
+      </DirectorySearch>
+    </Property>
+    <ComponentGroup Id="RevitAddinManifest2020">
+      <ComponentRef Id="RevitAddinCmp_73A2AF8864FC500FA49048BF" />
+    </ComponentGroup>
+    <Property Id="REVIT2021DIR">
+      <DirectorySearch AssignToProperty="yes" Path="[ProgramFiles64Folder]Autodesk\Revit 2021" Id="SearchRevit2021Dir">
+        <FileSearch Id="SearchRevit2021Exe" Name="Revit.exe" />
+      </DirectorySearch>
+    </Property>
+    <ComponentGroup Id="RevitAddinManifest2021">
+      <ComponentRef Id="RevitAddinCmp_1BEA20E1DF19B12013976DE2" />
+    </ComponentGroup>
+    <Property Id="REVIT2022DIR">
+      <DirectorySearch AssignToProperty="yes" Path="[ProgramFiles64Folder]Autodesk\Revit 2022" Id="SearchRevit2022Dir">
+        <FileSearch Id="SearchRevit2022Exe" Name="Revit.exe" />
+      </DirectorySearch>
+    </Property>
+    <ComponentGroup Id="RevitAddinManifest2022">
+      <ComponentRef Id="RevitAddinCmp_B1AB1E892617F210425F658C" />
+    </ComponentGroup>
+    <Property Id="REVIT2023DIR">
+      <DirectorySearch AssignToProperty="yes" Path="[ProgramFiles64Folder]Autodesk\Revit 2023" Id="SearchRevit2023Dir">
+        <FileSearch Id="SearchRevit2023Exe" Name="Revit.exe" />
+      </DirectorySearch>
+    </Property>
+    <ComponentGroup Id="RevitAddinManifest2023">
+      <ComponentRef Id="RevitAddinCmp_D398B29D3DBBB9BF201D4C7E" />
+    </ComponentGroup>
     <Property Id="REVIT2024DIR">
       <DirectorySearch AssignToProperty="yes" Path="[ProgramFiles64Folder]Autodesk\Revit 2024" Id="SearchRevit2024Dir">
         <FileSearch Id="SearchRevit2024Exe" Name="Revit.exe" />
@@ -12496,17 +12564,87 @@
     <ComponentGroup Id="RevitAddinManifest2024">
       <ComponentRef Id="RevitAddinCmp_6557739A67283A8DE383FC5C" />
     </ComponentGroup>
+    <Property Id="REVIT2025DIR">
+      <DirectorySearch AssignToProperty="yes" Path="[ProgramFiles64Folder]Autodesk\Revit 2025" Id="SearchRevit2025Dir">
+        <FileSearch Id="SearchRevit2025Exe" Name="Revit.exe" />
+      </DirectorySearch>
+    </Property>
+    <ComponentGroup Id="RevitAddinManifest2025">
+      <ComponentRef Id="RevitAddinCmp_B2B2F104D32C638903E151A9" />
+    </ComponentGroup>
+    <Property Id="REVIT2026DIR">
+      <DirectorySearch AssignToProperty="yes" Path="[ProgramFiles64Folder]Autodesk\Revit 2026" Id="SearchRevit2026Dir">
+        <FileSearch Id="SearchRevit2026Exe" Name="Revit.exe" />
+      </DirectorySearch>
+    </Property>
+    <ComponentGroup Id="RevitAddinManifest2026">
+      <ComponentRef Id="RevitAddinCmp_158A323A7BA44870F23D96F1" />
+    </ComponentGroup>
     <DirectoryRef Id="REVITADDINSDIR">
+      <Directory Id="RevitAddinDir_73A2AF8864FC500FA49048BF" Name="2020">
+        <Component Id="RevitAddinCmp_73A2AF8864FC500FA49048BF" Guid="*">
+          <File Source="$(var.GeneratedRoot)\manifests\Revit2020\RevitOpusBridge.addin" Id="RevitAddinFile_73A2AF8864FC500FA49048BF" KeyPath="yes" />
+        </Component>
+      </Directory>
+      <Directory Id="RevitAddinDir_1BEA20E1DF19B12013976DE2" Name="2021">
+        <Component Id="RevitAddinCmp_1BEA20E1DF19B12013976DE2" Guid="*">
+          <File Source="$(var.GeneratedRoot)\manifests\Revit2021\RevitOpusBridge.addin" Id="RevitAddinFile_1BEA20E1DF19B12013976DE2" KeyPath="yes" />
+        </Component>
+      </Directory>
+      <Directory Id="RevitAddinDir_B1AB1E892617F210425F658C" Name="2022">
+        <Component Id="RevitAddinCmp_B1AB1E892617F210425F658C" Guid="*">
+          <File Source="$(var.GeneratedRoot)\manifests\Revit2022\RevitOpusBridge.addin" Id="RevitAddinFile_B1AB1E892617F210425F658C" KeyPath="yes" />
+        </Component>
+      </Directory>
+      <Directory Id="RevitAddinDir_D398B29D3DBBB9BF201D4C7E" Name="2023">
+        <Component Id="RevitAddinCmp_D398B29D3DBBB9BF201D4C7E" Guid="*">
+          <File Source="$(var.GeneratedRoot)\manifests\Revit2023\RevitOpusBridge.addin" Id="RevitAddinFile_D398B29D3DBBB9BF201D4C7E" KeyPath="yes" />
+        </Component>
+      </Directory>
       <Directory Id="RevitAddinDir_6557739A67283A8DE383FC5C" Name="2024">
         <Component Id="RevitAddinCmp_6557739A67283A8DE383FC5C" Guid="*">
           <File Source="$(var.GeneratedRoot)\manifests\Revit2024\RevitOpusBridge.addin" Id="RevitAddinFile_6557739A67283A8DE383FC5C" KeyPath="yes" />
         </Component>
       </Directory>
+      <Directory Id="RevitAddinDir_B2B2F104D32C638903E151A9" Name="2025">
+        <Component Id="RevitAddinCmp_B2B2F104D32C638903E151A9" Guid="*">
+          <File Source="$(var.GeneratedRoot)\manifests\Revit2025\RevitOpusBridge.addin" Id="RevitAddinFile_B2B2F104D32C638903E151A9" KeyPath="yes" />
+        </Component>
+      </Directory>
+      <Directory Id="RevitAddinDir_158A323A7BA44870F23D96F1" Name="2026">
+        <Component Id="RevitAddinCmp_158A323A7BA44870F23D96F1" Guid="*">
+          <File Source="$(var.GeneratedRoot)\manifests\Revit2026\RevitOpusBridge.addin" Id="RevitAddinFile_158A323A7BA44870F23D96F1" KeyPath="yes" />
+        </Component>
+      </Directory>
     </DirectoryRef>
     <FeatureGroup Id="RevitVersionFeatures">
+      <Feature Id="Revit2020Addin" Description="Registers the Opus Revit Bridge add-in for Revit 2020 when Autodesk Revit 2020 is installed." AllowAdvertise="no" Display="hidden" Level="200" InstallDefault="local" Title="Revit 2020 Add-in">
+        <Level Condition="REVIT2020DIR" Value="1" />
+        <ComponentGroupRef Id="RevitAddinManifest2020" />
+      </Feature>
+      <Feature Id="Revit2021Addin" Description="Registers the Opus Revit Bridge add-in for Revit 2021 when Autodesk Revit 2021 is installed." AllowAdvertise="no" Display="hidden" Level="200" InstallDefault="local" Title="Revit 2021 Add-in">
+        <Level Condition="REVIT2021DIR" Value="1" />
+        <ComponentGroupRef Id="RevitAddinManifest2021" />
+      </Feature>
+      <Feature Id="Revit2022Addin" Description="Registers the Opus Revit Bridge add-in for Revit 2022 when Autodesk Revit 2022 is installed." AllowAdvertise="no" Display="hidden" Level="200" InstallDefault="local" Title="Revit 2022 Add-in">
+        <Level Condition="REVIT2022DIR" Value="1" />
+        <ComponentGroupRef Id="RevitAddinManifest2022" />
+      </Feature>
+      <Feature Id="Revit2023Addin" Description="Registers the Opus Revit Bridge add-in for Revit 2023 when Autodesk Revit 2023 is installed." AllowAdvertise="no" Display="hidden" Level="200" InstallDefault="local" Title="Revit 2023 Add-in">
+        <Level Condition="REVIT2023DIR" Value="1" />
+        <ComponentGroupRef Id="RevitAddinManifest2023" />
+      </Feature>
       <Feature Id="Revit2024Addin" Description="Registers the Opus Revit Bridge add-in for Revit 2024 when Autodesk Revit 2024 is installed." AllowAdvertise="no" Display="hidden" Level="200" InstallDefault="local" Title="Revit 2024 Add-in">
         <Level Condition="REVIT2024DIR" Value="1" />
         <ComponentGroupRef Id="RevitAddinManifest2024" />
+      </Feature>
+      <Feature Id="Revit2025Addin" Description="Registers the Opus Revit Bridge add-in for Revit 2025 when Autodesk Revit 2025 is installed." AllowAdvertise="no" Display="hidden" Level="200" InstallDefault="local" Title="Revit 2025 Add-in">
+        <Level Condition="REVIT2025DIR" Value="1" />
+        <ComponentGroupRef Id="RevitAddinManifest2025" />
+      </Feature>
+      <Feature Id="Revit2026Addin" Description="Registers the Opus Revit Bridge add-in for Revit 2026 when Autodesk Revit 2026 is installed." AllowAdvertise="no" Display="hidden" Level="200" InstallDefault="local" Title="Revit 2026 Add-in">
+        <Level Condition="REVIT2026DIR" Value="1" />
+        <ComponentGroupRef Id="RevitAddinManifest2026" />
       </Feature>
     </FeatureGroup>
   </Fragment>

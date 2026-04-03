@@ -32,7 +32,7 @@ namespace RevitOpusBridge.Handlers
                 {
                     var lengthParameter = wall.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH);
                     var lengthMeters = lengthParameter != null
-                        ? UnitUtils.ConvertFromInternalUnits(lengthParameter.AsDouble(), UnitTypeId.Meters)
+                        ? RevitApiCompatibility.ConvertLengthToMeters(lengthParameter.AsDouble())
                         : 0.0;
 
                     var baseLevelId = wall.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT)?.AsElementId();
@@ -47,7 +47,7 @@ namespace RevitOpusBridge.Handlers
 
                     wallList.Add(new
                     {
-                        id = wall.Id.Value,
+                        id = RevitApiCompatibility.GetElementIdValue(wall.Id),
                         typeName = wall.WallType.Name,
                         length = lengthMeters,
                         baseLevel,

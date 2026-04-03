@@ -37,13 +37,11 @@ namespace RevitOpusBridge.Handlers
                         continue;
                     }
 
-                    var areaSquareMeters = UnitUtils.ConvertFromInternalUnits(
-                        room.Area,
-                        UnitTypeId.SquareMeters);
+                    var areaSquareMeters = RevitApiCompatibility.ConvertAreaToSquareMeters(room.Area);
 
                     roomList.Add(new
                     {
-                        id = room.Id.Value,
+                        id = RevitApiCompatibility.GetElementIdValue(room.Id),
                         name = room.Name,
                         number = room.Number,
                         area = areaSquareMeters,
