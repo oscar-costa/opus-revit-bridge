@@ -4,10 +4,10 @@
 
 Two strictly separated layers — never mix them:
 
-| Layer | Location | Technology | Responsibility |
-| --- | --- | --- | --- |
+| Layer | Location          | Technology              | Responsibility                                                         |
+| ----- | ----------------- | ----------------------- | ---------------------------------------------------------------------- |
 | Brain | `bridge-service/` | Node.js 20 / TypeScript | HTTP API, Named Pipe client, quantity mapping, validation, XLSX export |
-| Hands | `RevitPlugin/` | C# / .NET Framework 4.8 | Revit API execution inside valid Revit API context |
+| Hands | `RevitPlugin/`    | C# / .NET Framework 4.8 | Revit API execution inside valid Revit API context                     |
 
 Cross-boundary communication: Named Pipe `\\.\pipe\opus-revit-bridge`, newline-delimited JSON.
 
@@ -42,7 +42,7 @@ npm run build
 npm run start
 
 # C# — full build requires local Revit 2024 SDK DLLs
-dotnet build RevitPlugin/RevitOpusBridge.csproj -p:RevitApiPath="C:\Program Files\Autodesk\Revit 2024"
+dotnet build RevitPlugin/RevitOpusBridge.csproj -p:RevitVersion=2024 -p:RevitApiPath="C:\Program Files\Autodesk\Revit 2024"
 
 # CI-safe C# validation
 dotnet restore RevitPlugin/RevitOpusBridge.csproj

@@ -3,12 +3,14 @@
 Deterministic bridge between Autodesk Revit and Ecosoft Opus.
 
 The first implementation target is a sidecar architecture with two layers:
+
 - `RevitPlugin/`: thin Revit add-in responsible only for safe Revit API execution.
 - `bridge-service/`: Node.js service responsible for orchestration, mapping, validation, and XLSX export.
 
 ## First slice
 
 The initial slice implemented in this scaffold does three things:
+
 1. Starts a local HTTP service.
 2. Queries Revit project information through a Named Pipe sidecar.
 3. Generates a simple XLSX workbook from normalized budget lines.
@@ -49,6 +51,27 @@ The initial slice implemented in this scaffold does three things:
 - `bridge-service/config/opus-template.json` — workbook template for Opus sheet names and columns.
 - `samples/` — optional fixtures and templates.
 - `scripts/` — local automation scripts.
+
+## Bridge Service Runtime Paths
+
+The bridge service now supports installer-friendly runtime locations instead of assuming it always runs from the source repo.
+
+- `OPUS_BRIDGE_SERVICE_ROOT` overrides the bridge-service installation root.
+- `OPUS_BRIDGE_CONFIG_DIR` overrides the directory used for `export.json`, `mappings.json`, and `opus-template.json`.
+- `OPUS_BRIDGE_DATA_DIR` overrides the base directory used to resolve relative export output paths such as `./output`.
+
+If those variables are not set, the service falls back to the current repo-style layout under `bridge-service/`.
+
+## Revit Plugin Build And Install
+
+The Revit plugin build now accepts a `RevitVersion` property so the packaging flow can emit version-specific payloads without changing the shared plugin code.
+
+- Default local target is Revit 2024.
+- Version-specific build output now lands under `RevitPlugin/bin/<Configuration>/Revit<Version>/net48/`.
+- Use `dotnet build RevitPlugin/RevitOpusBridge.csproj -p:RevitVersion=2024 -p:RevitApiPath="C:\Program Files\Autodesk\Revit 2024"` for local 2024 builds.
+- Use `scripts/install-revit-plugin.ps1 -RevitVersion 2024` to generate a local add-in manifest for the selected Revit year.
+- The install script also supports `-InstallScope AllUsers` for machine-wide add-in registration and `-AssemblyPath` when an installer needs to point the manifest at an installed DLL path.
+- The checked-in `RevitPlugin/RevitOpusBridge.addin` file is a placeholder only; release and local install manifests should be generated from the install script or installer.
 
 ## Export behavior
 

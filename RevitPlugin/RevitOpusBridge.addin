@@ -2,7 +2,7 @@
 <RevitAddIns>
   <AddIn Type="Application">
     <Name>RevitOpusBridge</Name>
-    <Assembly>D:\code\__Github\opus-revit-bridge\RevitPlugin\bin\Debug\net48\RevitOpusBridge.dll</Assembly>
+    <Assembly>__GENERATED_BY_INSTALL_SCRIPT__</Assembly>
     <AddInId>724E2F54-394D-4A64-9E2A-4FF53A3B4B03</AddInId>
     <FullClassName>RevitOpusBridge.App</FullClassName>
     <VendorId>OPBR</VendorId>

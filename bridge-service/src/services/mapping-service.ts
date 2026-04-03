@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { NormalizedBudgetLine } from "../types.js";
 import type { MappingConfig, ValidationSummary } from "../types.js";
-import { findProjectRoot, resolveProjectPath } from "./project-paths.js";
+import { getRuntimePaths, resolveRuntimeConfigPath } from "./project-paths.js";
 
 export interface QuantityCandidate {
   sourceCategory: string;
@@ -22,11 +22,15 @@ export interface MappingRule {
 }
 
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = findProjectRoot(currentDirectory);
-const defaultMappingConfigPath = path.resolve(projectRoot, "config/mappings.json");
 
-export async function loadMappingConfig(configPath = defaultMappingConfigPath): Promise<MappingConfig> {
-  const raw = await readFile(resolveProjectPath(projectRoot, configPath), "utf8");
+export async function loadMappingConfig(configPath?: string): Promise<MappingConfig> {
+  const runtimePaths = getRuntimePaths(currentDirectory);
+  const defaultMappingConfigPath = path.join(runtimePaths.configDirectory, "mappings.json");
+  const resolvedConfigPath = resolveRuntimeConfigPath(
+    runtimePaths,
+    configPath ?? defaultMappingConfigPath
+  );
+  const raw = await readFile(resolvedConfigPath, "utf8");
   return JSON.parse(raw) as MappingConfig;
 }
 

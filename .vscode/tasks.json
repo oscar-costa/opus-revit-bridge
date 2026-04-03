@@ -64,6 +64,7 @@
       "args": [
         "build",
         "RevitPlugin/RevitOpusBridge.csproj",
+        "-p:RevitVersion=2024",
         "-p:RevitApiPath=C:\\Program Files\\Autodesk\\Revit 2024"
       ],
       "options": {
@@ -80,7 +81,9 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}/scripts/install-revit-2024-plugin.ps1"
+        "${workspaceFolder}/scripts/install-revit-plugin.ps1",
+        "-RevitVersion",
+        "2024"
       ],
       "options": {
         "cwd": "${workspaceFolder}"

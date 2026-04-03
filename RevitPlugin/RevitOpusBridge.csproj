@@ -9,7 +9,10 @@
     <Platforms>x64</Platforms>
     <UseWPF>true</UseWPF>
     <Optimize>false</Optimize>
-    <RevitApiPath Condition="'$(RevitApiPath)' == ''">C:\Program Files\Autodesk\Revit 2024</RevitApiPath>
+    <RevitVersion Condition="'$(RevitVersion)' == ''">2024</RevitVersion>
+    <RevitApiPath Condition="'$(RevitApiPath)' == ''">C:\Program Files\Autodesk\Revit $(RevitVersion)</RevitApiPath>
+    <BaseOutputPath>$(MSBuildProjectDirectory)\bin\</BaseOutputPath>
+    <OutputPath>$(BaseOutputPath)$(Configuration)\Revit$(RevitVersion)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
