@@ -53,8 +53,8 @@ namespace RevitOpusBridge
 
             var geometry = new EllipseGeometry(new Point(center, center), radius, radius);
             var drawing = new GeometryDrawing(
-                new SolidColorBrush(Color.FromRgb(0x16, 0x68, 0xA8)),
-                new Pen(new SolidColorBrush(Color.FromRgb(0x0E, 0x47, 0x72)), 1.5),
+                new SolidColorBrush(Color.FromRgb(0x2E, 0xA0, 0x43)),
+                new Pen(new SolidColorBrush(Color.FromRgb(0x1E, 0x6B, 0x2C)), 1.5),
                 geometry);
 
             var image = new DrawingImage(drawing);
