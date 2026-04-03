@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "outputDirectory": "./output",
+  "fileNamePrefix": "opus-export",
+  "templateConfigPath": "./config/opus-template.json"
+}

@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "workbookType": "Opus Revit Bridge Export",
+  "projectSheet": {
+    "name": "Project"
+  },
+  "importSheet": {
+    "name": "Opus Import",
+    "freezeHeader": true,
+    "columns": [
+      {
+        "header": "Clave",
+        "sourceKey": "conceptCode",
+        "width": 20
+      },
+      {
+        "header": "Descripción",
+        "sourceKey": "description",
+        "width": 60
+      },
+      {
+        "header": "Unidad",
+        "sourceKey": "unit",
+        "width": 12
+      },
+      {
+        "header": "Cantidad",
+        "sourceKey": "quantity",
+        "width": 14
+      }
+    ]
+  },
+  "metadataSheet": {
+    "name": "Metadata"
+  },
+  "traceabilitySheet": {
+    "name": "Traceability",
+    "freezeHeader": true,
+    "columns": [
+      {
+        "header": "Clave",
+        "sourceKey": "conceptCode",
+        "width": 20
+      },
+      {
+        "header": "Descripción",
+        "sourceKey": "description",
+        "width": 60
+      },
+      {
+        "header": "Nivel",
+        "sourceKey": "levelName",
+        "width": 18
+      },
+      {
+        "header": "Categoría Revit",
+        "sourceKey": "sourceCategory",
+        "width": 20
+      },
+      {
+        "header": "Elementos origen",
+        "sourceKey": "sourceElementIds",
+        "width": 30
+      },
+      {
+        "header": "Notas",
+        "sourceKey": "importNotes",
+        "width": 42
+      }
+    ]
+  }
+}

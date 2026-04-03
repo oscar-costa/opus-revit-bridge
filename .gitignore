@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+*.user
+*.suo
+*.cache
+.vscode/
+RevitPlugin/bin/
+RevitPlugin/obj/
+bridge-service/dist/
+bridge-service/node_modules/
+bridge-service/.turbo/
+*.log

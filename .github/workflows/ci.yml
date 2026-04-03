@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  bridge-service:
+    name: Bridge Service Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: bridge-service/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: bridge-service
+
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: bridge-service
+
+      - name: Test
+        run: npm test
+        working-directory: bridge-service
+
+      - name: Build
+        run: npm run build
+        working-directory: bridge-service
+
+  revit-plugin-restore:
+    name: Revit Plugin Restore
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore plugin dependencies
+        run: dotnet restore RevitPlugin/RevitOpusBridge.csproj
+
+      - name: Explain skipped plugin build
+        shell: pwsh
+        run: |
+          Write-Host "Skipping dotnet build for RevitPlugin in hosted CI."
+          Write-Host "Reason: RevitAPI.dll and RevitAPIUI.dll are local SDK references that require a machine with Revit 2024 installed."

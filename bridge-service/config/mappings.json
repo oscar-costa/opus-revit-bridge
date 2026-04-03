@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "sourceCategory": "OST_Walls",
+      "conceptCode": "OP-WALL-001",
+      "description": "Wall length",
+      "unit": "m"
+    },
+    {
+      "sourceCategory": "OST_Rooms",
+      "conceptCode": "OP-ROOM-001",
+      "description": "Room area",
+      "unit": "m2"
+    },
+    {
+      "sourceCategory": "OST_Doors",
+      "conceptCode": "OP-DOOR-001",
+      "description": "Door count",
+      "unit": "pza"
+    },
+    {
+      "sourceCategory": "OST_Windows",
+      "conceptCode": "OP-WINDOW-001",
+      "description": "Window count",
+      "unit": "pza"
+    }
+  ]
+}
