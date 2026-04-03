@@ -79,12 +79,18 @@ function Get-RevitApiPath {
 function Write-TextFile {
   param(
     [string]$Path,
-    [string]$Content
+    [string]$Content,
+    [System.Text.Encoding]$Encoding = $null
   )
 
   $parent = Split-Path -Parent $Path
   New-Item -ItemType Directory -Path $parent -Force | Out-Null
-  Set-Content -Path $Path -Value $Content -Encoding UTF8
+
+  if ($null -eq $Encoding) {
+    $Encoding = [System.Text.UTF8Encoding]::new($false)
+  }
+
+  [System.IO.File]::WriteAllText($Path, $Content, $Encoding)
 }
 
 function Get-SelectedRevitVersions {
@@ -167,7 +173,7 @@ set "OPUS_BRIDGE_DATA_DIR=%ProgramData%\Opus Revit Bridge"
 "%~dp0runtime\node\node.exe" "%OPUS_BRIDGE_SERVICE_ROOT%\dist\src\index.js"
 "@
 
-Write-TextFile -Path (Join-Path $programFilesProductRoot "start-bridge-service.cmd") -Content $launcherContent
+Write-TextFile -Path (Join-Path $programFilesProductRoot "start-bridge-service.cmd") -Content $launcherContent -Encoding ([System.Text.Encoding]::ASCII)
 Write-TextFile -Path (Join-Path $outputRoot ".gitkeep") -Content ""
 
 $pluginVersions = @()
