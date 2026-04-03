@@ -33,6 +33,18 @@ The bridge-service runtime uses these environment variables to bind to the insta
 
 The staging script writes `installer-layout.json` into the payload root. This file records the intended install locations and the plugin payloads that were staged for each selected Revit version.
 
+## WiX Authoring Flow
+
+The WiX scaffold does not manually track payload files. Instead:
+
+1. `scripts/stage-installer-payload.ps1` produces the staged Program Files and ProgramData tree.
+2. `scripts/generate-wix-installer-assets.ps1` reads `installer-layout.json`, emits generated Revit add-in manifest files, and writes `installer/generated/PayloadFragments.wxs`.
+3. `installer/OpusRevitBridge.Installer.wixproj` builds an MSI from `installer/src/Product.wxs` plus the generated fragment.
+
+This keeps the staged payload as the source of truth while allowing the installer project to stay small and maintainable.
+
+The current MSI output path is `installer/bin/Release/en-us/OpusRevitBridge.Installer.msi`.
+
 ## Current Scope
 
 - Supported first installer target: Revit 2024

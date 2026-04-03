@@ -1,0 +1,20 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+
+  <PropertyGroup>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <OutputType>Package</OutputType>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <Cultures>en-us</Cultures>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">0.1.0</ProductVersion>
+    <PayloadRoot Condition="'$(PayloadRoot)' == ''">$(MSBuildProjectDirectory)\..\artifacts\installer-payload</PayloadRoot>
+    <GeneratedRoot>$(MSBuildProjectDirectory)\generated</GeneratedRoot>
+    <DefineConstants>ProductVersion=$(ProductVersion);PayloadRoot=$(PayloadRoot);GeneratedRoot=$(GeneratedRoot)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src\Product.wxs" />
+    <Compile Include="generated\PayloadFragments.wxs" Condition="Exists('generated\PayloadFragments.wxs')" />
+    <EmbeddedResource Include="src\Installer.en-us.wxl" />
+  </ItemGroup>
+
+</Project>

@@ -109,6 +109,24 @@
       },
       "group": "build",
       "problemMatcher": []
+    },
+    {
+      "label": "installer: build wix",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/build-wix-installer.ps1",
+        "-RevitVersions",
+        "2024"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }

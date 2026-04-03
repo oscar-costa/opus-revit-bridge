@@ -87,6 +87,17 @@ The repository now includes `scripts/stage-installer-payload.ps1`, which assembl
 
 Run `powershell -ExecutionPolicy Bypass -File .\scripts\stage-installer-payload.ps1 -RevitVersions 2024` from the repo root to create the staging tree under `artifacts/installer-payload/`.
 
+## WiX Installer Scaffold
+
+The repository now includes an MSI-first WiX scaffold under `installer/`.
+
+- `installer/OpusRevitBridge.Installer.wixproj` is the SDK-style WiX project.
+- `installer/src/Product.wxs` defines the package roots and feature wiring for the per-machine MSI.
+- `scripts/generate-wix-installer-assets.ps1` converts `artifacts/installer-payload/installer-layout.json` into WiX fragments and generated Revit add-in manifest files.
+- `scripts/build-wix-installer.ps1` stages the payload, regenerates WiX authoring, and builds the MSI.
+
+Run `powershell -ExecutionPolicy Bypass -File .\scripts\build-wix-installer.ps1 -RevitVersions 2024` from the repo root to produce the WiX sources and build the MSI at `installer/bin/Release/en-us/OpusRevitBridge.Installer.msi`.
+
 ## Export behavior
 
 - `POST /api/export/walls/xlsx` blocks export when unmapped lines exist.

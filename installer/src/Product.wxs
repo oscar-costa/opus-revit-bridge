@@ -1,0 +1,36 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Name="Opus Revit Bridge"
+    Manufacturer="Opus"
+    Version="$(var.ProductVersion)"
+    UpgradeCode="3AA0C7D2-0547-4B91-8B25-8C6103389BC9"
+    Scope="perMachine"
+    Language="1033"
+    InstallerVersion="500">
+
+    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Opus Revit Bridge" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="OPUSDATADIR" Name="Opus Revit Bridge" />
+      <Directory Id="AUTODESKDATADIR" Name="Autodesk">
+        <Directory Id="REVITDATADIR" Name="Revit">
+          <Directory Id="REVITADDINSDIR" Name="Addins" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <Property Id="ARPCONTACT" Value="Opus" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/" />
+
+    <Feature Id="MainFeature" Title="Opus Revit Bridge" Level="1">
+      <ComponentGroupRef Id="ProgramFilesPayload" />
+      <ComponentGroupRef Id="ProgramDataPayload" />
+      <ComponentGroupRef Id="RevitAddinManifests" />
+    </Feature>
+  </Package>
+</Wix>

@@ -10,4 +10,6 @@ bridge-service/dist/
 bridge-service/node_modules/
 bridge-service/.turbo/
 artifacts/
+installer/bin/
+installer/obj/
 *.log
