@@ -1,0 +1,93 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "bridge-service: demo prep",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "bridge-service: typecheck",
+        "bridge-service: test",
+        "bridge-service: build"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "bridge-service: build",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "options": {
+        "cwd": "${workspaceFolder}/bridge-service"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "bridge-service: test",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "test"],
+      "options": {
+        "cwd": "${workspaceFolder}/bridge-service"
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "bridge-service: typecheck",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "typecheck"],
+      "options": {
+        "cwd": "${workspaceFolder}/bridge-service"
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "bridge-service: start",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "start"],
+      "options": {
+        "cwd": "${workspaceFolder}/bridge-service"
+      },
+      "dependsOn": "bridge-service: build",
+      "isBackground": true,
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "revit-plugin: build",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "RevitPlugin/RevitOpusBridge.csproj",
+        "-p:RevitApiPath=C:\\Program Files\\Autodesk\\Revit 2024"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "revit-plugin: install",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/install-revit-2024-plugin.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "revit-plugin: build",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}
