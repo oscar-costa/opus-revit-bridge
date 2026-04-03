@@ -91,6 +91,24 @@
       "dependsOn": "revit-plugin: build",
       "group": "build",
       "problemMatcher": []
+    },
+    {
+      "label": "installer: stage payload",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/stage-installer-payload.ps1",
+        "-RevitVersions",
+        "2024"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }

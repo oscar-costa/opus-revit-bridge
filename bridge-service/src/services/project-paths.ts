@@ -21,6 +21,10 @@ function isRuntimeRoot(candidateDirectory: string): boolean {
   return existsSync(path.join(candidateDirectory, "config"));
 }
 
+function stripConfigPrefix(targetPath: string): string {
+  return targetPath.replace(/^(\.\\|\.\/)?config[\\/]/, "");
+}
+
 export function findServiceRoot(startDirectory: string): string {
   const configuredServiceRoot = resolveEnvironmentDirectory(SERVICE_ROOT_ENV_VAR);
   if (configuredServiceRoot) {
@@ -84,6 +88,18 @@ export function resolveRuntimeConfigPath(
   const configDirectoryCandidate = path.resolve(runtimePaths.configDirectory, targetPath);
   if (existsSync(configDirectoryCandidate)) {
     return configDirectoryCandidate;
+  }
+
+  const normalizedConfigPath = stripConfigPrefix(targetPath);
+  if (normalizedConfigPath !== targetPath) {
+    const normalizedConfigCandidate = path.resolve(
+      runtimePaths.configDirectory,
+      normalizedConfigPath
+    );
+
+    if (existsSync(normalizedConfigCandidate)) {
+      return normalizedConfigCandidate;
+    }
   }
 
   return serviceRootCandidate;

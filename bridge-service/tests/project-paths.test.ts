@@ -78,6 +78,17 @@ describe("findProjectRoot", () => {
       .toBe(path.resolve("d:\\code\\__Github\\opus-revit-bridge\\bridge-service\\config\\mappings.json"));
   });
 
+  it("resolves repo-style config paths from the configured config directory", () => {
+    const runtimePaths = {
+      serviceRoot: path.resolve("C:\\Program Files\\Opus Revit Bridge\\bridge-service"),
+      configDirectory: path.resolve("d:\\code\\__Github\\opus-revit-bridge\\bridge-service\\config"),
+      dataDirectory: path.resolve("C:\\ProgramData\\Opus Revit Bridge"),
+    };
+
+    expect(resolveRuntimeConfigPath(runtimePaths, "./config/opus-template.json"))
+      .toBe(path.resolve("d:\\code\\__Github\\opus-revit-bridge\\bridge-service\\config\\opus-template.json"));
+  });
+
   it("resolves relative output paths from the configured data directory", () => {
     const runtimePaths = {
       serviceRoot: path.resolve("C:\\Program Files\\Opus Revit Bridge\\bridge-service"),

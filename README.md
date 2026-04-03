@@ -73,6 +73,20 @@ The Revit plugin build now accepts a `RevitVersion` property so the packaging fl
 - The install script also supports `-InstallScope AllUsers` for machine-wide add-in registration and `-AssemblyPath` when an installer needs to point the manifest at an installed DLL path.
 - The checked-in `RevitPlugin/RevitOpusBridge.addin` file is a placeholder only; release and local install manifests should be generated from the install script or installer.
 
+## Installer Payload Layout
+
+The repository now includes `scripts/stage-installer-payload.ps1`, which assembles a staging layout for a future Windows installer.
+
+- `ProgramFiles/Opus Revit Bridge/bridge-service/` contains the compiled bridge-service runtime plus production Node dependencies.
+- `ProgramFiles/Opus Revit Bridge/runtime/node/node.exe` contains the bundled Node runtime used to launch the service.
+- `ProgramFiles/Opus Revit Bridge/RevitPlugin/Revit<Version>/RevitOpusBridge.dll` contains the version-specific Revit plugin payload.
+- `ProgramFiles/Opus Revit Bridge/start-bridge-service.cmd` launches the bridge-service with `OPUS_BRIDGE_SERVICE_ROOT`, `OPUS_BRIDGE_CONFIG_DIR`, and `OPUS_BRIDGE_DATA_DIR` pointed at the installed layout.
+- `ProgramData/Opus Revit Bridge/config/` contains editable runtime config files.
+- `ProgramData/Opus Revit Bridge/output/` is the default writable export location.
+- `installer-layout.json` describes the intended final install paths for use by later WiX packaging work.
+
+Run `powershell -ExecutionPolicy Bypass -File .\scripts\stage-installer-payload.ps1 -RevitVersions 2024` from the repo root to create the staging tree under `artifacts/installer-payload/`.
+
 ## Export behavior
 
 - `POST /api/export/walls/xlsx` blocks export when unmapped lines exist.

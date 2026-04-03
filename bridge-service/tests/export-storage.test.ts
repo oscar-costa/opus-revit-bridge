@@ -68,6 +68,17 @@ describe("export storage", () => {
       .toBe(path.resolve("C:\\ProgramData\\Opus Revit Bridge\\output"));
   });
 
+  it("keeps repo-style template paths working when config lives outside the service root", async () => {
+    process.env[SERVICE_ROOT_ENV_VAR] = "C:\\Program Files\\Opus Revit Bridge\\bridge-service";
+    process.env[CONFIG_DIR_ENV_VAR] = path.resolve("./config");
+    process.env[DATA_DIR_ENV_VAR] = "C:\\ProgramData\\Opus Revit Bridge";
+
+    const config = await loadExportConfig();
+
+    expect(config.templateConfigPath)
+      .toBe(path.resolve("./config/opus-template.json"));
+  });
+
   it("saves workbook buffers to disk", async () => {
     const tempDirectory = await mkdtemp(path.join(os.tmpdir(), "opus-export-"));
 
