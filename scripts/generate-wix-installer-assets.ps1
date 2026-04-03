@@ -151,6 +151,63 @@ function Add-ComponentGroup {
   $Fragment.Add($groupElement)
 }
 
+function Add-RevitVersionDetectionProperty {
+  param(
+    [System.Xml.Linq.XElement]$Fragment,
+    [string]$Version,
+    [System.Xml.Linq.XNamespace]$Namespace
+  )
+
+  $propertyId = "REVIT${Version}DIR"
+  $directorySearchId = "SearchRevit${Version}Dir"
+  $fileSearchId = "SearchRevit${Version}Exe"
+
+  $propertyElement = New-WixElement -Name ($Namespace + "Property") -Attributes @{
+    Id = $propertyId
+  }
+  $directorySearchElement = New-WixElement -Name ($Namespace + "DirectorySearch") -Attributes @{
+    Id = $directorySearchId
+    Path = "[ProgramFiles64Folder]Autodesk\Revit $Version"
+    AssignToProperty = "yes"
+  }
+  $fileSearchElement = New-WixElement -Name ($Namespace + "FileSearch") -Attributes @{
+    Id = $fileSearchId
+    Name = "Revit.exe"
+  }
+
+  $directorySearchElement.Add($fileSearchElement)
+  $propertyElement.Add($directorySearchElement)
+  $Fragment.Add($propertyElement)
+}
+
+function Add-RevitVersionFeature {
+  param(
+    [System.Xml.Linq.XElement]$FeatureGroup,
+    [string]$Version,
+    [string]$ComponentGroupId,
+    [System.Xml.Linq.XNamespace]$Namespace
+  )
+
+  $featureElement = New-WixElement -Name ($Namespace + "Feature") -Attributes @{
+    Id = "Revit${Version}Addin"
+    Title = "Revit $Version Add-in"
+    Description = "Registers the Opus Revit Bridge add-in for Revit $Version when Autodesk Revit $Version is installed."
+    Level = "200"
+    Display = "hidden"
+    AllowAdvertise = "no"
+    InstallDefault = "local"
+  }
+  $featureElement.Add((New-WixElement -Name ($Namespace + "Level") -Attributes @{
+    Value = "1"
+    Condition = "REVIT${Version}DIR"
+  }))
+  $featureElement.Add((New-WixElement -Name ($Namespace + "ComponentGroupRef") -Attributes @{
+    Id = $ComponentGroupId
+  }))
+
+  $FeatureGroup.Add($featureElement)
+}
+
 function Write-RevitAddinManifest {
   param(
     [string]$OutputPath,
@@ -222,39 +279,44 @@ Add-ComponentGroup -Fragment $programDataFragment -GroupId "ProgramDataPayload" 
 $root.Add($programDataFragment)
 
 $manifestRoot = Join-Path $resolvedOutputDirectory "manifests"
-$revitComponentIds = [System.Collections.Generic.List[string]]::new()
 $revitFragment = [System.Xml.Linq.XElement]::new($namespace + "Fragment")
+$revitFeatureGroup = New-WixElement -Name ($namespace + "FeatureGroup") -Attributes @{ Id = "RevitVersionFeatures" }
 $revitDirectoryRef = New-WixElement -Name ($namespace + "DirectoryRef") -Attributes @{ Id = "REVITADDINSDIR" }
 
-foreach ($version in $layout.revitPlugin.versions) {
+foreach ($version in ($layout.revitPlugin.versions | Sort-Object { [int]$_.version })) {
+  $versionValue = [string]$version.version
+  Add-RevitVersionDetectionProperty -Fragment $revitFragment -Version $versionValue -Namespace $namespace
+
   $versionDirectoryElement = New-WixElement -Name ($namespace + "Directory") -Attributes @{
-    Id = (Get-HashedId -Prefix "RevitAddinDir" -Value $version.version)
-    Name = [string]$version.version
+    Id = (Get-HashedId -Prefix "RevitAddinDir" -Value $versionValue)
+    Name = $versionValue
   }
 
-  $manifestOutputPath = Join-Path $manifestRoot "Revit$($version.version)\RevitOpusBridge.addin"
+  $manifestOutputPath = Join-Path $manifestRoot "Revit$versionValue\RevitOpusBridge.addin"
   Write-RevitAddinManifest -OutputPath $manifestOutputPath -AssemblyPath ([string]$version.assemblyPath)
 
-  $componentId = Get-HashedId -Prefix "RevitAddinCmp" -Value ([string]$version.version)
-  $fileId = Get-HashedId -Prefix "RevitAddinFile" -Value ([string]$version.version)
+  $componentId = Get-HashedId -Prefix "RevitAddinCmp" -Value $versionValue
+  $fileId = Get-HashedId -Prefix "RevitAddinFile" -Value $versionValue
+  $componentGroupId = "RevitAddinManifest$versionValue"
   $component = New-WixElement -Name ($namespace + "Component") -Attributes @{
     Id = $componentId
     Guid = "*"
   }
   $fileElement = New-WixElement -Name ($namespace + "File") -Attributes @{
     Id = $fileId
-    Source = ('$(var.GeneratedRoot)\manifests\Revit{0}\RevitOpusBridge.addin' -f $version.version)
+    Source = ('$(var.GeneratedRoot)\manifests\Revit{0}\RevitOpusBridge.addin' -f $versionValue)
     KeyPath = "yes"
   }
 
   $component.Add($fileElement)
   $versionDirectoryElement.Add($component)
   $revitDirectoryRef.Add($versionDirectoryElement)
-  $revitComponentIds.Add($componentId)
+  Add-ComponentGroup -Fragment $revitFragment -GroupId $componentGroupId -ComponentIds ([System.Collections.Generic.List[string]]@($componentId)) -Namespace $namespace
+  Add-RevitVersionFeature -FeatureGroup $revitFeatureGroup -Version $versionValue -ComponentGroupId $componentGroupId -Namespace $namespace
 }
 
 $revitFragment.Add($revitDirectoryRef)
-Add-ComponentGroup -Fragment $revitFragment -GroupId "RevitAddinManifests" -ComponentIds $revitComponentIds -Namespace $namespace
+$revitFragment.Add($revitFeatureGroup)
 $root.Add($revitFragment)
 
 $outputPath = Join-Path $resolvedOutputDirectory "PayloadFragments.wxs"

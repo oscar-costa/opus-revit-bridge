@@ -12488,6 +12488,14 @@
     </ComponentGroup>
   </Fragment>
   <Fragment>
+    <Property Id="REVIT2024DIR">
+      <DirectorySearch AssignToProperty="yes" Path="[ProgramFiles64Folder]Autodesk\Revit 2024" Id="SearchRevit2024Dir">
+        <FileSearch Id="SearchRevit2024Exe" Name="Revit.exe" />
+      </DirectorySearch>
+    </Property>
+    <ComponentGroup Id="RevitAddinManifest2024">
+      <ComponentRef Id="RevitAddinCmp_6557739A67283A8DE383FC5C" />
+    </ComponentGroup>
     <DirectoryRef Id="REVITADDINSDIR">
       <Directory Id="RevitAddinDir_6557739A67283A8DE383FC5C" Name="2024">
         <Component Id="RevitAddinCmp_6557739A67283A8DE383FC5C" Guid="*">
@@ -12495,8 +12503,11 @@
         </Component>
       </Directory>
     </DirectoryRef>
-    <ComponentGroup Id="RevitAddinManifests">
-      <ComponentRef Id="RevitAddinCmp_6557739A67283A8DE383FC5C" />
-    </ComponentGroup>
+    <FeatureGroup Id="RevitVersionFeatures">
+      <Feature Id="Revit2024Addin" Description="Registers the Opus Revit Bridge add-in for Revit 2024 when Autodesk Revit 2024 is installed." AllowAdvertise="no" Display="hidden" Level="200" InstallDefault="local" Title="Revit 2024 Add-in">
+        <Level Condition="REVIT2024DIR" Value="1" />
+        <ComponentGroupRef Id="RevitAddinManifest2024" />
+      </Feature>
+    </FeatureGroup>
   </Fragment>
 </Wix>

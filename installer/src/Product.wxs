@@ -30,7 +30,7 @@
     <Feature Id="MainFeature" Title="Opus Revit Bridge" Level="1">
       <ComponentGroupRef Id="ProgramFilesPayload" />
       <ComponentGroupRef Id="ProgramDataPayload" />
-      <ComponentGroupRef Id="RevitAddinManifests" />
+      <FeatureGroupRef Id="RevitVersionFeatures" />
     </Feature>
   </Package>
 </Wix>

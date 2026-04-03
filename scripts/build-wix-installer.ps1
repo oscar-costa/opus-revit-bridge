@@ -2,6 +2,8 @@ param(
     [ValidateSet("2020", "2021", "2022", "2023", "2024", "2025", "2026")]
     [string[]]$RevitVersions = @("2024"),
 
+  [switch]$AllSupportedRevitVersions,
+
     [ValidateSet("Debug", "Release")]
     [string]$Configuration = "Release",
 
@@ -14,6 +16,8 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+$supportedRevitVersions = @("2020", "2021", "2022", "2023", "2024", "2025", "2026")
 
 function Invoke-ExternalCommand {
   param(
@@ -33,8 +37,23 @@ function Invoke-ExternalCommand {
   }
 }
 
+function Get-SelectedRevitVersions {
+  param(
+    [string[]]$RequestedVersions,
+    [bool]$UseAllSupportedVersions
+  )
+
+  if ($UseAllSupportedVersions) {
+    return $supportedRevitVersions
+  }
+
+  return $RequestedVersions |
+    Sort-Object -Unique { [int]$_ }
+}
+
 $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = Split-Path -Parent $scriptDirectory
+$selectedRevitVersions = Get-SelectedRevitVersions -RequestedVersions $RevitVersions -UseAllSupportedVersions $AllSupportedRevitVersions.IsPresent
 $resolvedPayloadRoot = if ($PayloadRoot) {
   $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($PayloadRoot)
 } else {
@@ -48,9 +67,14 @@ if (-not $SkipStage) {
     "-File",
     (Join-Path $repoRoot "scripts\stage-installer-payload.ps1"),
     "-Configuration",
-    $Configuration,
-    "-RevitVersions"
-  ) + $RevitVersions
+    $Configuration
+  )
+
+  if ($AllSupportedRevitVersions) {
+    $stageArguments += "-AllSupportedRevitVersions"
+  } else {
+    $stageArguments += @("-RevitVersions") + $selectedRevitVersions
+  }
 
   Invoke-ExternalCommand -FilePath "powershell" -Arguments $stageArguments -WorkingDirectory $repoRoot
 }
@@ -74,3 +98,4 @@ Invoke-ExternalCommand -FilePath "dotnet" -Arguments @(
 ) -WorkingDirectory $repoRoot
 
 Write-Host "Built WiX installer using payload root: $resolvedPayloadRoot"
+Write-Host "Revit versions requested for packaging: $($selectedRevitVersions -join ', ')"

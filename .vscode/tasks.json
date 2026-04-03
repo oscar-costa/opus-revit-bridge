@@ -111,6 +111,23 @@
       "problemMatcher": []
     },
     {
+      "label": "installer: stage payload (2020-2026)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/stage-installer-payload.ps1",
+        "-AllSupportedRevitVersions"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
       "label": "installer: build wix",
       "type": "shell",
       "command": "powershell",
@@ -121,6 +138,23 @@
         "${workspaceFolder}/scripts/build-wix-installer.ps1",
         "-RevitVersions",
         "2024"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "installer: build wix (2020-2026)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/build-wix-installer.ps1",
+        "-AllSupportedRevitVersions"
       ],
       "options": {
         "cwd": "${workspaceFolder}"

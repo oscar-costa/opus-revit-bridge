@@ -44,6 +44,9 @@ npm run start
 # C# — full build requires local Revit 2024 SDK DLLs
 dotnet build RevitPlugin/RevitOpusBridge.csproj -p:RevitVersion=2024 -p:RevitApiPath="C:\Program Files\Autodesk\Revit 2024"
 
+# Multi-version installer packaging — requires local SDK/API DLLs for each selected Revit year
+powershell -ExecutionPolicy Bypass -File .\scripts\build-wix-installer.ps1 -AllSupportedRevitVersions
+
 # CI-safe C# validation
 dotnet restore RevitPlugin/RevitOpusBridge.csproj
 ```

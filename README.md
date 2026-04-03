@@ -87,6 +87,11 @@ The repository now includes `scripts/stage-installer-payload.ps1`, which assembl
 
 Run `powershell -ExecutionPolicy Bypass -File .\scripts\stage-installer-payload.ps1 -RevitVersions 2024` from the repo root to create the staging tree under `artifacts/installer-payload/`.
 
+For a multi-version payload, pass several years or use the new release preset:
+
+- `powershell -ExecutionPolicy Bypass -File .\scripts\stage-installer-payload.ps1 -RevitVersions 2024 2025 2026`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\stage-installer-payload.ps1 -AllSupportedRevitVersions`
+
 ## WiX Installer Scaffold
 
 The repository now includes an MSI-first WiX scaffold under `installer/`.
@@ -94,9 +99,14 @@ The repository now includes an MSI-first WiX scaffold under `installer/`.
 - `installer/OpusRevitBridge.Installer.wixproj` is the SDK-style WiX project.
 - `installer/src/Product.wxs` defines the package roots and feature wiring for the per-machine MSI.
 - `scripts/generate-wix-installer-assets.ps1` converts `artifacts/installer-payload/installer-layout.json` into WiX fragments and generated Revit add-in manifest files.
+- Each staged Revit year becomes its own generated MSI subfeature, and that subfeature is only enabled when `C:\Program Files\Autodesk\Revit <Version>\Revit.exe` exists on the target machine.
 - `scripts/build-wix-installer.ps1` stages the payload, regenerates WiX authoring, and builds the MSI.
 
 Run `powershell -ExecutionPolicy Bypass -File .\scripts\build-wix-installer.ps1 -RevitVersions 2024` from the repo root to produce the WiX sources and build the MSI at `installer/bin/Release/en-us/OpusRevitBridge.Installer.msi`.
+
+For a single release MSI that carries every currently supported Revit plugin payload, run `powershell -ExecutionPolicy Bypass -File .\scripts\build-wix-installer.ps1 -AllSupportedRevitVersions`.
+
+This requires local Revit SDK/API availability for every selected Revit year because the installer build flow compiles each version-specific plugin payload before packaging it.
 
 ## Export behavior
 

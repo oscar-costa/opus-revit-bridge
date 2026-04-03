@@ -2,6 +2,8 @@ param(
     [ValidateSet("2020", "2021", "2022", "2023", "2024", "2025", "2026")]
     [string[]]$RevitVersions = @("2024"),
 
+  [switch]$AllSupportedRevitVersions,
+
     [ValidateSet("Debug", "Release")]
     [string]$Configuration = "Release",
 
@@ -16,6 +18,8 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
+$supportedRevitVersions = @("2020", "2021", "2022", "2023", "2024", "2025", "2026")
 
 function Invoke-ExternalCommand {
   param(
@@ -83,8 +87,23 @@ function Write-TextFile {
   Set-Content -Path $Path -Value $Content -Encoding UTF8
 }
 
+function Get-SelectedRevitVersions {
+  param(
+    [string[]]$RequestedVersions,
+    [bool]$UseAllSupportedVersions
+  )
+
+  if ($UseAllSupportedVersions) {
+    return $supportedRevitVersions
+  }
+
+  return $RequestedVersions |
+    Sort-Object -Unique { [int]$_ }
+}
+
 $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = Split-Path -Parent $scriptDirectory
+$selectedRevitVersions = Get-SelectedRevitVersions -RequestedVersions $RevitVersions -UseAllSupportedVersions $AllSupportedRevitVersions.IsPresent
 $resolvedPayloadRoot = if ($PayloadRoot) {
   $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($PayloadRoot)
 } else {
@@ -107,7 +126,7 @@ if (-not $SkipBridgeServiceBuild) {
   Invoke-ExternalCommand -FilePath "npm" -Arguments @("run", "build") -WorkingDirectory $bridgeServiceSourceRoot
 }
 
-foreach ($revitVersion in $RevitVersions) {
+foreach ($revitVersion in $selectedRevitVersions) {
   if ($SkipPluginBuild) {
     continue
   }
@@ -152,7 +171,7 @@ Write-TextFile -Path (Join-Path $programFilesProductRoot "start-bridge-service.c
 Write-TextFile -Path (Join-Path $outputRoot ".gitkeep") -Content ""
 
 $pluginVersions = @()
-foreach ($revitVersion in $RevitVersions) {
+foreach ($revitVersion in $selectedRevitVersions) {
   $pluginSourcePath = Join-Path $repoRoot "RevitPlugin\bin\$Configuration\Revit$revitVersion\net48\RevitOpusBridge.dll"
   if (-not (Test-Path -Path $pluginSourcePath -PathType Leaf)) {
     throw "Plugin DLL not found at '$pluginSourcePath'."
@@ -184,6 +203,7 @@ $layoutMetadata = [PSCustomObject]@{
     launcher = "C:\Program Files\Opus Revit Bridge\start-bridge-service.cmd"
   }
   revitPlugin = [PSCustomObject]@{
+    selectedVersions = $selectedRevitVersions
     versions = $pluginVersions
   }
 }
@@ -194,3 +214,4 @@ Write-TextFile -Path (Join-Path $resolvedPayloadRoot "installer-layout.json") -C
 Write-Host "Staged installer payload to: $resolvedPayloadRoot"
 Write-Host "Program Files payload: $programFilesProductRoot"
 Write-Host "Program Data payload: $programDataProductRoot"
+Write-Host "Revit versions included: $($selectedRevitVersions -join ', ')"

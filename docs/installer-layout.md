@@ -45,8 +45,23 @@ This keeps the staged payload as the source of truth while allowing the installe
 
 The current MSI output path is `installer/bin/Release/en-us/OpusRevitBridge.Installer.msi`.
 
+The generated WiX authoring now creates one hidden add-in subfeature per staged Revit year. Each subfeature installs only when `C:\Program Files\Autodesk\Revit <Version>\Revit.exe` is present on the target machine, so a single MSI can carry multiple plugin payloads without blindly registering manifests for missing Revit versions.
+
+The release scripts now expose two version-selection modes:
+
+- `-RevitVersions 2024 2025` stages or packages only the listed Revit years.
+- `-AllSupportedRevitVersions` expands to the full supported installer set: `2020 2021 2022 2023 2024 2025 2026`.
+
+Example multi-version release commands:
+
+- `powershell -ExecutionPolicy Bypass -File .\scripts\stage-installer-payload.ps1 -RevitVersions 2024 2025 2026`
+- `powershell -ExecutionPolicy Bypass -File .\scripts\build-wix-installer.ps1 -AllSupportedRevitVersions`
+
+These commands still require matching local Revit SDK installations for every plugin year that is being built.
+
 ## Current Scope
 
 - Supported first installer target: Revit 2024
 - Extensible payload shape: Revit 2020 through 2026
+- Current MSI behavior: bridge-service payload always installs; staged Revit add-ins auto-enable per detected Revit year
 - Current launcher model: user-session command launcher, not a Windows service
