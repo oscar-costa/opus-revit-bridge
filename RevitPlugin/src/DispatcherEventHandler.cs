@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Autodesk.Revit.UI;
 
@@ -6,35 +7,38 @@ namespace RevitOpusBridge
 {
     internal sealed class DispatcherEventHandler : IExternalEventHandler
     {
-        private Func<UIApplication, string>? _pendingAction;
-        private TaskCompletionSource<string>? _tcs;
+        private readonly ConcurrentQueue<DispatchWorkItem> _pendingItems = new();
+
+        private sealed class DispatchWorkItem
+        {
+            public DispatchWorkItem(Func<UIApplication, string> action, TaskCompletionSource<string> completionSource)
+            {
+                Action = action;
+                CompletionSource = completionSource;
+            }
+
+            public Func<UIApplication, string> Action { get; }
+
+            public TaskCompletionSource<string> CompletionSource { get; }
+        }
 
         public void Enqueue(Func<UIApplication, string> action, TaskCompletionSource<string> tcs)
         {
-            _pendingAction = action;
-            _tcs = tcs;
+            _pendingItems.Enqueue(new DispatchWorkItem(action, tcs));
         }
 
         public void Execute(UIApplication app)
         {
-            var action = _pendingAction;
-            var tcs = _tcs;
-
-            _pendingAction = null;
-            _tcs = null;
-
-            if (action == null || tcs == null)
+            while (_pendingItems.TryDequeue(out var workItem))
             {
-                return;
-            }
-
-            try
-            {
-                tcs.TrySetResult(action(app));
-            }
-            catch (Exception ex)
-            {
-                tcs.TrySetException(ex);
+                try
+                {
+                    workItem.CompletionSource.TrySetResult(workItem.Action(app));
+                }
+                catch (Exception ex)
+                {
+                    workItem.CompletionSource.TrySetException(ex);
+                }
             }
         }
 
