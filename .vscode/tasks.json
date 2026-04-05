@@ -58,6 +58,18 @@
       "problemMatcher": []
     },
     {
+      "label": "bridge-service: end",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "Get-NetTCPConnection -LocalPort 3781 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
       "label": "revit-plugin: build",
       "type": "shell",
       "command": "dotnet",
