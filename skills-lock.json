@@ -10,6 +10,11 @@
       "source": "softaworks/agent-toolkit",
       "sourceType": "github",
       "computedHash": "b6c206a3cab0333a1d3d3cf27114099d0d5f25eb07d86c8f12472b7aa7d59a4c"
+    },
+    "mermaid-to-image": {
+      "source": "zc277584121/marketing-skills",
+      "sourceType": "github",
+      "computedHash": "b207a9af88de3aed8208112ff3de0e635a6d682303c564cb20ac0e196a2b6d88"
     }
   }
 }
