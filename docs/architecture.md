@@ -1,5 +1,9 @@
 # Architecture
 
+## Diagram
+
+See [figures/architecture.mmd](figures/architecture.mmd).
+
 ## Design
 
 This project follows the same sidecar split proven in the `revit-mcp` reference project, but it is not MCP-first.

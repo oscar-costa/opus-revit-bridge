@@ -1,0 +1,56 @@
+flowchart TB
+    User(["👤 Revit User"])
+
+    subgraph External["External Systems"]
+        Revit[["Autodesk Revit\n(BIM Host)"]]
+        Opus[["Opus\n(Estimating Software)"]]
+    end
+
+    subgraph Hands["Hands Layer — RevitPlugin  ·  C# / .NET 4.8"]
+        direction TB
+        Bridge["Bridge.cs\nNamed Pipe server\n+ background listener"]
+        Dispatcher["DispatcherEventHandler.cs\nIExternalEventHandler\n— Revit main thread"]
+        Handlers["Handlers/\nGetWalls · GetRooms\nGetDoors · GetWindows\nGetProjectInfo · Status"]
+    end
+
+    subgraph Pipe["IPC Transport"]
+        NamedPipe["\\.\\pipe\\opus-revit-bridge\nnewline-delimited JSON"]
+    end
+
+    subgraph Brain["Brain Layer — bridge-service  ·  Node.js 20 / TypeScript"]
+        direction TB
+        subgraph Routes["HTTP Routes  (:3781)"]
+            VRoute["POST /api/validate/combined"]
+            ERouteXlsx["POST /api/export/combined/xlsx"]
+            ERouteFile["POST /api/export/combined/file"]
+            RRoute["GET /api/revit/..."]
+        end
+        subgraph Services["Services"]
+            RevitClient["revit-client.ts\nNamed Pipe client"]
+            CategoryLines["category-lines.ts\naggregation"]
+            MappingService["mapping-service.ts\nconcept + unit mapping"]
+            XlsxExporter["xlsx-exporter.ts\nworkbook builder"]
+            ExportStorage["export-storage.ts\nconfig loading + save-to-disk"]
+        end
+        subgraph Config["config/"]
+            MappingsJson["mappings.json"]
+            ExportJson["export.json"]
+            TemplateJson["opus-template.json"]
+        end
+    end
+
+    Output[("output/\nXLSX workbooks\nProject · Opus Import\nMetadata · Traceability")]
+
+    User -- "HTTP REST" --> Routes
+    RevitClient -- "Pipe client" --> NamedPipe
+    NamedPipe -- "Pipe server" --> Bridge
+    Bridge -- "ExternalEvent.Raise()" --> Dispatcher
+    Dispatcher --> Handlers
+    Handlers -- "Revit API\nmain thread only" --> Revit
+
+    Routes --> Services
+    ExportStorage -- "reads" --> Config
+    XlsxExporter -- "writes" --> Output
+
+    Output -. "manual import" .-> Opus
+    User -. "opens XLSX\nin Opus" .-> Opus
