@@ -1,100 +1,49 @@
 # Architecture Diagram
 
 ```mermaid
-flowchart LR
-    user[User, browser, or local client]
+C4Context
+    title System Context - Opus Revit Bridge
 
-    subgraph workspace[Repository and local tooling]
-        docs[docs and samples]
-        scripts[scripts and installer tooling]
-        installer[WiX installer project]
-    end
+    Person(user, "User", "Runs exports and validation from a local client")
+    System(revit, "Autodesk Revit", "Hosts the active building model and add-in")
+    System(bridge, "Opus Revit Bridge", "Local bridge that validates quantities and exports Opus workbooks")
+    System_Ext(opus, "Ecosoft Opus", "Consumes quantity-oriented workbook imports")
+    System_Ext(filesystem, "Local File System", "Stores config, templates, and generated workbooks")
 
-    subgraph brain[Brain: bridge-service / Node.js + TypeScript]
-        direction TB
-        entry[index.ts and server.ts]
-        routes[HTTP routes\nrevit, validation, export]
-        revitClient[revit-client.ts]
+    Rel(user, bridge, "Calls local HTTP endpoints")
+    Rel(bridge, revit, "Requests model data via named pipe", "newline-delimited JSON")
+    Rel(bridge, opus, "Produces import-ready XLSX workbooks for")
+    Rel(bridge, filesystem, "Reads config and writes exports")
+```
 
-        subgraph orchestration[Service layer]
-            categoryLines[category-lines]
-            mapping[mapping-service]
-            scope[export-scope]
-            storage[export-storage and project-paths]
-            workbook[xlsx-exporter]
-            quantity[wall, room, count budget builders]
-        end
+## Container View
 
-        config[(Config files\nmappings.json\nexport.json\nopus-template.json)]
-        output[(Generated workbooks\noutput or installed data dir)]
+```mermaid
+C4Container
+    title Container View - Opus Revit Bridge
 
-        entry --> routes
-        routes --> revitClient
-        routes --> categoryLines
-        routes --> storage
-        categoryLines --> quantity
-        categoryLines --> mapping
-        routes --> workbook
-        routes --> scope
-        storage --> config
-        workbook --> output
-        storage --> output
-    end
+    Person(user, "User")
+    System(revit, "Autodesk Revit", "Desktop host for the model")
+    System_Ext(opus, "Ecosoft Opus", "Consumes workbook imports")
 
-    subgraph boundary[Cross-process boundary]
-        pipe[Named Pipe\n\\.\\pipe\\opus-revit-bridge\nnewline-delimited JSON]
-    end
+    Container_Boundary(system, "Opus Revit Bridge") {
+        Container(service, "bridge-service", "Node.js / TypeScript", "HTTP API, mapping, validation, workbook generation")
+        Container(plugin, "RevitPlugin", ".NET Framework 4.8 / C#", "Named pipe server and Revit API dispatch")
+        ContainerDb(config, "Runtime Config", "JSON files", "Mappings, export settings, workbook template")
+        ContainerDb(output, "Generated Workbooks", "XLSX files", "Saved quantity export files")
+    }
 
-    subgraph hands[Hands: RevitPlugin / C# + .NET Framework 4.8]
-        direction TB
-        app[App.cs add-in startup]
-        bridge[Bridge.cs pipe server]
-        dispatcher[DispatcherEventHandler\nExternalEvent queue]
-        handlers[Handlers\nproject info, walls, rooms, category elements]
-        status[Status ribbon command]
-
-        app --> bridge
-        app --> status
-        bridge --> dispatcher
-        dispatcher --> handlers
-    end
-
-    subgraph revit[Autodesk Revit host process]
-        direction TB
-        ui[Revit UI thread]
-        api[Revit API]
-        model[Active project model]
-
-        ui --> api
-        api --> model
-    end
-
-    subgraph deployment[Deployment layout]
-        programFiles[Program Files payload\nservice, runtime, plugin binaries]
-        programData[ProgramData payload\nconfig and output]
-    end
-
-    user -->|HTTP on localhost:3781| routes
-    docs --> entry
-    scripts --> installer
-    scripts --> programFiles
-    scripts --> programData
-    installer --> programFiles
-    installer --> programData
-    revitClient -->|request and response| pipe
-    pipe --> bridge
-    handlers -->|execute inside valid Revit API context| ui
-    model --> api
-    bridge -->|JSON responses| pipe
-    config -. loaded at runtime .-> storage
-    programFiles -. installed service root .-> entry
-    programData -. installed config and output .-> config
-    programData -. writable exports .-> output
+    Rel(user, service, "Calls", "HTTP localhost:3781")
+    Rel(service, plugin, "Requests project and category data", "Named Pipe / JSON")
+    Rel(plugin, revit, "Executes queries inside valid API context", "ExternalEvent")
+    Rel(service, config, "Loads settings and templates from")
+    Rel(service, output, "Writes export files to")
+    Rel(service, opus, "Produces import-ready workbooks for")
 ```
 
 ## Notes
 
-- This view is broader than the runtime-only sketch and includes repository, deployment, and service-layer structure.
-- The key architectural rule is still the Brain versus Hands split: the Node service never calls the Revit API directly.
-- All Revit API work is dispatched through ExternalEvent onto the Revit UI thread.
-- The service owns mapping, validation, workbook generation, and runtime path resolution.
+- The context diagram shows the system boundary and its external relationships.
+- The container diagram shows the core Brain and Hands split inside the system.
+- The Node service owns orchestration, mapping, validation, and XLSX generation.
+- The Revit plugin stays thin and only executes Revit API work through ExternalEvent on the Revit UI thread.
